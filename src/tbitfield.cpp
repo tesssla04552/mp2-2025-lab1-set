@@ -34,7 +34,10 @@ TBitField::TBitField(const TBitField &bf) : BitLen(bf.BitLen), MemLen(bf.MemLen)
 
 TBitField::~TBitField()
 {
-    delete[] pMem;
+    if (pMem != nullptr) {
+        delete[] pMem;
+        pMem = nullptr;
+    }
 }
 
 int TBitField::GetMemIndex(const int n) const // индекс Мем для бита n
@@ -62,6 +65,9 @@ int TBitField::GetLength(void) const // получить длину (к-во б�
 
 void TBitField::SetBit(const int n) // установить бит
 {
+    if (n < 0 || n >= BitLen) {
+        throw std::out_of_range("Bit index out of range in SetBit");
+    }
     int idx = GetMemIndex(n);
     TELEM mask = GetMemMask(n);
     pMem[idx] |= mask;
@@ -69,6 +75,9 @@ void TBitField::SetBit(const int n) // установить бит
 
 void TBitField::ClrBit(const int n) // очистить бит
 {
+    if (n < 0 || n >= BitLen) {
+        throw std::out_of_range("Bit index out of range in ClrBit");
+    }
     int idx = GetMemIndex(n);
     TELEM mask = GetMemMask(n);
     pMem[idx] &= ~mask;
@@ -76,6 +85,9 @@ void TBitField::ClrBit(const int n) // очистить бит
 
 int TBitField::GetBit(const int n) const // получить значение бита
 {
+    if (n < 0 || n >= BitLen) {
+        throw std::out_of_range("Bit index out of range in GetBit");
+    }
     int idx = GetMemIndex(n);
     TELEM mask = GetMemMask(n);
     return (pMem[idx] & mask) != 0;
@@ -87,6 +99,7 @@ TBitField& TBitField::operator=(const TBitField &bf) // присваивание
 {
     if (this != &bf) {
         delete[] pMem;
+        pMem = nullptr;
         BitLen = bf.BitLen;
         MemLen = bf.MemLen;
         pMem = new TELEM[MemLen];
@@ -112,7 +125,7 @@ int TBitField::operator==(const TBitField &bf) const // сравнение
 
 int TBitField::operator!=(const TBitField &bf) const // сравнение
 {
-    return ~(*this == bf); //переделать 
+    return ~(*this == bf); 
 }   
 
 TBitField TBitField::operator|(const TBitField &bf) // операция "или"

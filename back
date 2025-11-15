@@ -1,0 +1,179 @@
+[1mdiff --git a/sln/vc10/bitfield/bitfield.vcxproj b/sln/vc10/bitfield/bitfield.vcxproj[m
+[1mindex f4b10eb..c57b0e3 100644[m
+[1m--- a/sln/vc10/bitfield/bitfield.vcxproj[m
+[1m+++ b/sln/vc10/bitfield/bitfield.vcxproj[m
+[36m@@ -20,10 +20,12 @@[m
+     <ConfigurationType>StaticLibrary</ConfigurationType>[m
+     <CharacterSet>Unicode</CharacterSet>[m
+     <WholeProgramOptimization>true</WholeProgramOptimization>[m
+[32m+[m[32m    <PlatformToolset>v143</PlatformToolset>[m
+   </PropertyGroup>[m
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">[m
+     <ConfigurationType>StaticLibrary</ConfigurationType>[m
+     <CharacterSet>Unicode</CharacterSet>[m
+[32m+[m[32m    <PlatformToolset>v143</PlatformToolset>[m
+   </PropertyGroup>[m
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />[m
+   <ImportGroup Label="ExtensionSettings">[m
+[1mdiff --git a/sln/vc10/gtest/gtest.vcxproj b/sln/vc10/gtest/gtest.vcxproj[m
+[1mindex 5185104..5667fe0 100644[m
+[1m--- a/sln/vc10/gtest/gtest.vcxproj[m
+[1m+++ b/sln/vc10/gtest/gtest.vcxproj[m
+[36m@@ -20,10 +20,12 @@[m
+     <ConfigurationType>StaticLibrary</ConfigurationType>[m
+     <CharacterSet>Unicode</CharacterSet>[m
+     <WholeProgramOptimization>true</WholeProgramOptimization>[m
+[32m+[m[32m    <PlatformToolset>v143</PlatformToolset>[m
+   </PropertyGroup>[m
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">[m
+     <ConfigurationType>StaticLibrary</ConfigurationType>[m
+     <CharacterSet>Unicode</CharacterSet>[m
+[32m+[m[32m    <PlatformToolset>v143</PlatformToolset>[m
+   </PropertyGroup>[m
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />[m
+   <ImportGroup Label="ExtensionSettings">[m
+[1mdiff --git a/sln/vc10/sample_prime_numbers/sample_prime_numbers.vcxproj b/sln/vc10/sample_prime_numbers/sample_prime_numbers.vcxproj[m
+[1mindex 981eb64..c057a31 100644[m
+[1m--- a/sln/vc10/sample_prime_numbers/sample_prime_numbers.vcxproj[m
+[1m+++ b/sln/vc10/sample_prime_numbers/sample_prime_numbers.vcxproj[m
+[36m@@ -20,10 +20,12 @@[m
+     <ConfigurationType>Application</ConfigurationType>[m
+     <CharacterSet>Unicode</CharacterSet>[m
+     <WholeProgramOptimization>true</WholeProgramOptimization>[m
+[32m+[m[32m    <PlatformToolset>v143</PlatformToolset>[m
+   </PropertyGroup>[m
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">[m
+     <ConfigurationType>Application</ConfigurationType>[m
+     <CharacterSet>Unicode</CharacterSet>[m
+[32m+[m[32m    <PlatformToolset>v143</PlatformToolset>[m
+   </PropertyGroup>[m
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />[m
+   <ImportGroup Label="ExtensionSettings">[m
+[1mdiff --git a/sln/vc10/test_bitfield/test_bitfield.vcxproj b/sln/vc10/test_bitfield/test_bitfield.vcxproj[m
+[1mindex 5b72614..9d59323 100644[m
+[1m--- a/sln/vc10/test_bitfield/test_bitfield.vcxproj[m
+[1m+++ b/sln/vc10/test_bitfield/test_bitfield.vcxproj[m
+[36m@@ -20,10 +20,12 @@[m
+     <ConfigurationType>Application</ConfigurationType>[m
+     <CharacterSet>Unicode</CharacterSet>[m
+     <WholeProgramOptimization>true</WholeProgramOptimization>[m
+[32m+[m[32m    <PlatformToolset>v143</PlatformToolset>[m
+   </PropertyGroup>[m
+   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">[m
+     <ConfigurationType>Application</ConfigurationType>[m
+     <CharacterSet>Unicode</CharacterSet>[m
+[32m+[m[32m    <PlatformToolset>v143</PlatformToolset>[m
+   </PropertyGroup>[m
+   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />[m
+   <ImportGroup Label="ExtensionSettings">[m
+[1mdiff --git a/src/tbitfield.cpp b/src/tbitfield.cpp[m
+[1mindex 673aaae..0ad32e5 100644[m
+[1m--- a/src/tbitfield.cpp[m
+[1m+++ b/src/tbitfield.cpp[m
+[36m@@ -34,7 +34,10 @@[m [mTBitField::TBitField(const TBitField &bf) : BitLen(bf.BitLen), MemLen(bf.MemLen)[m
+ [m
+ TBitField::~TBitField()[m
+ {[m
+[31m-    delete[] pMem;[m
+[32m+[m[32m    if (pMem != nullptr) {[m
+[32m+[m[32m        delete[] pMem;[m
+[32m+[m[32m        pMem = nullptr;[m
+[32m+[m[32m    }[m
+ }[m
+ [m
+ int TBitField::GetMemIndex(const int n) const // индекс Мем для бита n[m
+[36m@@ -62,6 +65,9 @@[m [mint TBitField::GetLength(void) const // получить длину (к-во б[m
+ [m
+ void TBitField::SetBit(const int n) // установить бит[m
+ {[m
+[32m+[m[32m    if (n < 0 || n >= BitLen) {[m
+[32m+[m[32m        throw std::out_of_range("Bit index out of range in SetBit");[m
+[32m+[m[32m    }[m
+     int idx = GetMemIndex(n);[m
+     TELEM mask = GetMemMask(n);[m
+     pMem[idx] |= mask;[m
+[36m@@ -69,6 +75,9 @@[m [mvoid TBitField::SetBit(const int n) // установить бит[m
+ [m
+ void TBitField::ClrBit(const int n) // очистить бит[m
+ {[m
+[32m+[m[32m    if (n < 0 || n >= BitLen) {[m
+[32m+[m[32m        throw std::out_of_range("Bit index out of range in ClrBit");[m
+[32m+[m[32m    }[m
+     int idx = GetMemIndex(n);[m
+     TELEM mask = GetMemMask(n);[m
+     pMem[idx] &= ~mask;[m
+[36m@@ -76,6 +85,9 @@[m [mvoid TBitField::ClrBit(const int n) // очистить бит[m
+ [m
+ int TBitField::GetBit(const int n) const // получить значение бита[m
+ {[m
+[32m+[m[32m    if (n < 0 || n >= BitLen) {[m
+[32m+[m[32m        throw std::out_of_range("Bit index out of range in GetBit");[m
+[32m+[m[32m    }[m
+     int idx = GetMemIndex(n);[m
+     TELEM mask = GetMemMask(n);[m
+     return (pMem[idx] & mask) != 0;[m
+[36m@@ -87,6 +99,7 @@[m [mTBitField& TBitField::operator=(const TBitField &bf) // присваивание[m
+ {[m
+     if (this != &bf) {[m
+         delete[] pMem;[m
+[32m+[m[32m        pMem = nullptr;[m
+         BitLen = bf.BitLen;[m
+         MemLen = bf.MemLen;[m
+         pMem = new TELEM[MemLen];[m
+[36m@@ -112,7 +125,7 @@[m [mint TBitField::operator==(const TBitField &bf) const // сравнение[m
+ [m
+ int TBitField::operator!=(const TBitField &bf) const // сравнение[m
+ {[m
+[31m-    return ~(*this == bf); //переделать [m
+[32m+[m[32m    return ~(*this == bf);[m[41m [m
+ }   [m
+ [m
+ TBitField TBitField::operator|(const TBitField &bf) // операция "или"[m
+[1mdiff --git a/src/tset.cpp b/src/tset.cpp[m
+[1mindex c636aa1..2b63cef 100644[m
+[1m--- a/src/tset.cpp[m
+[1m+++ b/src/tset.cpp[m
+[36m@@ -39,23 +39,25 @@[m [mint TSet::GetMaxPower(void) const // получить макс. к-во эл-т[m
+ int TSet::IsMember(const int Elem) const // элемент множества?[m
+ {[m
+     if (Elem < 0 || Elem >= MaxPower) {[m
+[31m-        return 0;[m
+[32m+[m[32m        throw std::out_of_range("Element index out of range in IsMember");[m
+     }[m
+     return BitField.GetBit(Elem);[m
+ }[m
+ [m
+ void TSet::InsElem(const int Elem) // включение элемента множества[m
+ {[m
+[31m-    if (Elem >= 0 && Elem < MaxPower) {[m
+[31m-        BitField.SetBit(Elem);[m
+[32m+[m[32m    if (Elem < 0 || Elem > MaxPower) {[m
+[32m+[m[32m        throw std::out_of_range("Element index out of range in InsElem");[m
+     }[m
+[32m+[m[32m    BitField.SetBit(Elem);[m
+ }[m
+ [m
+ void TSet::DelElem(const int Elem) // исключение элемента множества[m
+ {[m
+[31m-    if (Elem >= 0 && Elem < MaxPower) {[m
+[31m-        BitField.ClrBit(Elem);[m
+[32m+[m[32m    if (Elem < 0 || Elem > MaxPower) {[m
+[32m+[m[32m        throw std::out_of_range("Element index out of range in DelElem");[m
+     }[m
+[32m+[m[32m    BitField.ClrBit(Elem);[m
+ }[m
+ [m
+ // теоретико-множественные операции[m
+[1mdiff --git a/test/test_tbitfield.cpp b/test/test_tbitfield.cpp[m
+[1mindex fa388ab..abd46e5 100644[m
+[1m--- a/test/test_tbitfield.cpp[m
+[1m+++ b/test/test_tbitfield.cpp[m
+[36m@@ -2,7 +2,7 @@[m
+ [m
+ #include <gtest.h>[m
+ [m
+[31m-TEST(TBitField, can_create_bitfield_with_positive_length)[m
+[32m+[m[32mTEST(TBitField, can_create_bitfield_with_positive_length) //[m[41m [m
+ {[m
+   ASSERT_NO_THROW(TBitField bf(3));[m
+ }[m

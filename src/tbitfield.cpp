@@ -19,6 +19,9 @@ TBitField::TBitField(int len) : BitLen(len)
     }
     MemLen = (BitLen + sizeof(TELEM) * 8 - 1) / (sizeof(TELEM) * 8);
     pMem = new TELEM[MemLen];
+    if (pMem == nullptr) {
+        throw std::bad_alloc();
+    }
     for (int i = 0; i < MemLen; i++) {
         pMem[i] = 0;
     }
